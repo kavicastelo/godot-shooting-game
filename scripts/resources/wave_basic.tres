@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SpawnWave" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/spawn_wave.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/actors/enemy_basic.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+enemy_scene = ExtResource("2")
+spawn_interval = 1.2
+max_alive_enemies = 20
