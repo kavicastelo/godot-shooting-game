@@ -38,6 +38,7 @@ collision_layer = 2
 collision_mask = 12
 script = ExtResource("3")
 health_component_path = NodePath("../HealthComponent")
+
 owner_group = &"enemy"
 inflicted_damage = 15.0
 
