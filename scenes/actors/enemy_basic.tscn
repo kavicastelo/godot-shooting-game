@@ -39,5 +39,8 @@ collision_mask = 12
 script = ExtResource("3")
 health_component_path = NodePath("../HealthComponent")
 
+owner_group = &"enemy"
+inflicted_damage = 15.0
+
 [node name="HitboxCollision" type="CollisionShape2D" parent="Components/HitboxComponent"]
 shape = SubResource("2")

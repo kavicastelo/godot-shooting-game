@@ -13,10 +13,12 @@ extends Node
 
 var _elapsed: float = 0.0
 var _player_instance: Node2D
+var _is_playing_state: bool = false
 
 @onready var _player_parent: Node = get_node(player_parent_path)
 @onready var _enemy_parent: Node = get_node(enemy_parent_path)
 @onready var _spawn_points_root: Node = get_node(spawn_points_path)
+@onready var _game_manager: GameManager = get_parent().get_node("GameManager") as GameManager
 
 func _ready() -> void:
 	SignalBus.game_state_changed.connect(_on_game_state_changed)
@@ -24,9 +26,7 @@ func _ready() -> void:
 	_spawn_player()
 
 func _process(delta: float) -> void:
-	if wave == null:
-		return
-	if _is_playing() == false:
+	if wave == null or _is_playing_state == false:
 		return
 	if _enemy_parent.get_child_count() >= wave.max_alive_enemies:
 		return
@@ -34,10 +34,6 @@ func _process(delta: float) -> void:
 	if _elapsed >= wave.spawn_interval:
 		_elapsed = 0.0
 		_spawn_enemy()
-
-func _is_playing() -> bool:
-	var manager: GameManager = get_parent().get_node("GameManager") as GameManager
-	return manager != null and manager.current_state == GameManager.GameState.PLAYING
 
 func _spawn_player() -> void:
 	if player_scene == null:
@@ -60,13 +56,13 @@ func _spawn_enemy() -> void:
 	var marker: Marker2D = spawn_points[randi_range(0, spawn_points.size() - 1)] as Marker2D
 	enemy.global_position = marker.global_position
 
-func _on_game_state_changed(_previous_state: int, _new_state: int) -> void:
+func _on_game_state_changed(_previous_state: int, new_state: int) -> void:
 	_elapsed = 0.0
+	_is_playing_state = new_state == GameManager.GameState.PLAYING
 
 func _on_restart_requested() -> void:
 	for enemy: Node in _enemy_parent.get_children():
 		enemy.queue_free()
 	_spawn_player()
-	var manager: GameManager = get_parent().get_node("GameManager") as GameManager
-	if manager != null:
-		manager.change_state(GameManager.GameState.START)
+	if _game_manager != null:
+		_game_manager.change_state(GameManager.GameState.START)
