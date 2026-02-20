@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/actors/player.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/components/health_component.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/components/hitbox_component.gd" id="3"]
+[ext_resource type="Resource" path="res://scripts/resources/player_weapon_basic.tres" id="4"]
+
+[sub_resource type="CircleShape2D" id="1"]
+radius = 16.0
+
+[sub_resource type="CircleShape2D" id="2"]
+radius = 18.0
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1")
+weapon_stats = ExtResource("4")
+muzzle_path = NodePath("Muzzle")
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+shape = SubResource("1")
+
+[node name="BodySprite" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(20, 0, -14, -12, -8, 0, -14, 12)
+color = Color(0.3, 0.9, 1, 1)
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(24, 0)
+
+[node name="Components" type="Node" parent="."]
+
+[node name="HealthComponent" type="Node" parent="Components"]
+script = ExtResource("2")
+max_health = 100.0
+
+[node name="HitboxComponent" type="Area2D" parent="Components"]
+collision_layer = 4
+collision_mask = 18
+script = ExtResource("3")
+health_component_path = NodePath("../HealthComponent")
+owner_group = &"player"
+inflicted_damage = 0.0
+
+[node name="HitboxCollision" type="CollisionShape2D" parent="Components/HitboxComponent"]
+shape = SubResource("2")
